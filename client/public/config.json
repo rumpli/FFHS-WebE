@@ -1,0 +1,5 @@
+{
+  "HEALTH_URL": "/api/health",
+  "WS_URL": "/ws",
+  "API_URL": "/api"
+}

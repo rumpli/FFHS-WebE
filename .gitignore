@@ -1,0 +1,23 @@
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Node / TypeScript
+**/node_modules/
+**/dist/
+build/
+coverage/
+*.log
+npm-debug.log*
+
+# Frontend artifacts
+*.cache
+*.tsbuildinfo
+
+# Docs
+docs/*.pdf
+docs/*.tmp
+docs/*.bak
+docs/*.old

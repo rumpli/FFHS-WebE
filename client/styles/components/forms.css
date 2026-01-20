@@ -1,0 +1,102 @@
+@layer components {
+    .form .field {
+        @apply relative h-12;
+    }
+
+    .form .field-inner {
+        @apply relative;
+    }
+
+    /* Base input: full height, border, and the "final" font size */
+    .form .field-inner .field-input {
+        @apply w-full h-full box-border border rounded px-3 py-3 text-base
+        placeholder-transparent focus:border-blue-500 focus:outline-none
+        transition-all duration-200;
+    }
+
+    .form .field-inner .field-label {
+        @apply absolute left-3 top-1/2 -translate-y-1/2 text-base text-gray-500
+        pointer-events-none transition-all duration-200;
+    }
+
+    /* Empty: label in the middle with same size as final input text */
+    .form .field-inner .field-input:placeholder-shown + .field-label {
+        @apply text-base text-gray-400;
+    }
+
+    /* Focus: float label up, shrink INPUT text slightly to sit under it */
+    .form .field-inner .field-input:focus + .field-label {
+        @apply top-1 translate-y-0 text-sm text-blue-500;
+    }
+
+    /* While focused (with or without content), input text smaller */
+    .form .field-inner .field-input:focus {
+        @apply text-sm pt-4 pb-2;
+    }
+
+    /* Filled + blurred: hide label, move INPUT back to full-size, centered */
+    .form .field-inner .field-input:not(:placeholder-shown):not(:focus) + .field-label {
+        @apply opacity-0;
+    }
+
+    .form .field-inner .field-input:not(:placeholder-shown):not(:focus) {
+        @apply text-base;
+    }
+
+    .form .search-field {
+        transform: scale(0.9);
+    }
+
+    .form .form-row {
+        @apply w-[80%] mx-auto mb-10;
+    }
+
+    .form .form-compact .field-label {
+        @apply text-[15px];
+    }
+
+    .form .hint {
+        @apply text-xs text-gray-500 mt-1 transition-all duration-150;
+        min-height: 1rem;
+    }
+
+    .form .hint.error {
+        @apply text-red-600;
+    }
+
+    .form .hint.success {
+        @apply text-green-600;
+    }
+
+    /* Ensure form panels fit within short/landscape viewports: use layout tokens for padding
+       and limit height so long forms become scrollable instead of overflowing off-screen. */
+    .form {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: var(--popup-max-w, 520px);
+        padding-left: var(--main-pad-x);
+        padding-right: var(--main-pad-x);
+        padding-top: calc(var(--main-pad-top) + 8px);
+        padding-bottom: calc(var(--main-pad-bottom) + 8px);
+        margin-left: auto;
+        margin-right: auto;
+        /* Reserve some vertical breathing room for headers/footers */
+        max-height: calc(100vh - (var(--main-pad-top) + var(--main-pad-bottom) + 80px));
+        overflow: auto;
+    }
+
+    /* Slightly reduce vertical spacing for compact layouts to fit more content */
+    .form .compact-form-row {
+        @apply mb-4;
+    }
+
+    /* Utility: center small forms vertically with a sensible min padding */
+    .form .center-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: var(--main-pad-top);
+        padding-bottom: var(--main-pad-bottom);
+    }
+}
+

@@ -1,0 +1,193 @@
+@layer components {
+    .pill {
+        @apply px-2 py-0.5 rounded border text-sm;
+    }
+
+    .pill-ok {
+        @apply border-green-200 bg-green-50 text-green-700;
+    }
+
+    .pill-bad {
+        @apply border-red-200 bg-red-50 text-red-700;
+    }
+
+    .card {
+        @apply p-4 bg-white rounded-2xl shadow border border-gray-100;
+    }
+
+    .mono {
+        @apply font-mono whitespace-pre-wrap text-sm;
+    }
+
+    .card-svg {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        display: block;
+    }
+
+    .card-filter-selection {
+        @apply w-full max-w-md flex flex-wrap justify-center gap-2 text-xs mb-4;
+    }
+
+    .card-page-grid {
+        @apply w-full max-w-4xl grid grid-cols-4 md:grid-cols-4 gap-4 mb-4;
+    }
+
+    .card-slot {
+        @apply w-full;
+        aspect-ratio: 3 / 4;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    .card-slot > * {
+        @apply w-full h-full;
+        display: block;
+    }
+
+    .card-page-grid-wrapper {
+        position: relative;
+        @apply w-full max-w-4xl mb-4;
+    }
+
+    .placeholder-card {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .card-slot-placeholder {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .card-empty-msg {
+        @apply absolute inset-0 flex items-center justify-center text-xs text-gray-400;
+        pointer-events: none;
+    }
+
+    .card-page-control-r,
+    .card-page-control-l {
+        @apply absolute top-1/2 -translate-y-1/2;
+    }
+
+    .card-page-control-r {
+        @apply right-6;
+    }
+
+    .card-page-control-l {
+        @apply left-6;
+    }
+
+    .card-page-controls {
+        @apply items-center;
+    }
+
+    .card-detail-overlay {
+        @apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm;
+    }
+
+    /* Variable-driven sizing (tokens.css sets defaults / compact values) */
+    .card-detail-inner {
+        max-width: var(--popup-max-w);
+        max-height: var(--popup-max-h);
+        overflow: auto;
+        width: auto;
+        display: inline-block;
+        vertical-align: middle;
+        box-sizing: border-box;
+        text-align: left;
+    }
+
+    .card-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .card-wrapper > svg {
+        display: block;
+    }
+
+    .card-glow > svg {
+        filter: drop-shadow(0 0 6px rgba(172, 124, 255, 0.7)) drop-shadow(0 0 14px rgba(172, 124, 255, 0.5)) drop-shadow(0 0 22px rgba(172, 124, 255, 0.35));
+        transform-origin: center;
+        animation: cardGlowPulse 1.8s ease-in-out infinite;
+    }
+
+    .card-glow[data-rarity="legendary"] > svg {
+        filter: drop-shadow(0 0 8px rgba(255, 200, 80, 0.9)) drop-shadow(0 0 16px rgba(255, 200, 80, 0.7)) drop-shadow(0 0 26px rgba(255, 160, 0, 0.5));
+    }
+
+    .card-detail-inner tl-card {
+        display: block;
+        transform: none;
+        transform-origin: center;
+        width: auto !important;
+        max-width: 100%;
+    }
+
+    /* === CARD DETAIL: ULTIMATUM + REFUSAL STACK === */
+    .card-detail-inner.ultimatum-detail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-detail-stack {
+        display: grid;
+        place-items: center;
+    }
+
+    .detail-card {
+        grid-area: 1 / 1;
+        cursor: pointer;
+        transition: transform 200ms ease-out,
+        box-shadow 200ms ease-out,
+        opacity 200ms ease-out,
+        z-index 200ms step-end;
+        max-width: 94vw; /* keep your fallback behavior */
+    }
+
+    .detail-card-front {
+        z-index: 2;
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+
+    .detail-card-back {
+        z-index: 1;
+        transform: translate(18px, -10px) scale(0.96);
+        opacity: 0.9;
+        animation: reveal-linked-card 250ms ease-out both;
+    }
+
+    .card-detail-stack.swapped .detail-card-front {
+        z-index: 1;
+        transform: translate(18px, -10px) scale(0.96);
+        opacity: 0.9;
+    }
+
+    .card-detail-stack.swapped .detail-card-back {
+        z-index: 2;
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    .linked-card-label {
+        font-size: 0.75rem;
+        line-height: 1.1;
+        text-align: center;
+        color: #6b7280;
+        max-width: 18rem;
+    }
+
+    /* Ensure the tl-card SVG inside the detail popup is clamped */
+    .card-detail-inner tl-card .card-svg {
+        max-height: calc(92vh - 140px);
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+    }
+}

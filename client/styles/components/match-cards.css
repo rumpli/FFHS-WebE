@@ -1,0 +1,502 @@
+@layer components {
+    .shop-card-wrapper,
+    .hand-card-wrapper {
+        @apply rounded-xl border-slate-300 bg-white;
+        padding: 0.2rem;
+        display: inline-flex;
+        align-items: stretch;
+        justify-content: stretch;
+        transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+        overflow: visible;
+    }
+
+    .board-card-wrapper {
+        @apply rounded-xl border-slate-300 bg-white;
+        padding: 0.2rem;
+        display: inline-flex;
+        align-items: stretch;
+        justify-content: stretch;
+        transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    .hand-card-wrapper:hover {
+        @apply shadow-md bg-slate-50;
+        transform: translateY(-1px);
+    }
+
+    .board-card-wrapper:hover {
+        @apply shadow-md bg-slate-50;
+        transform: translateY(-1px);
+    }
+
+    .shop-card-wrapper > tl-card,
+    .hand-card-wrapper > tl-card {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .board-card-wrapper .match-card-svg-container,
+    .board-card-wrapper .match-card-svg-container > svg {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .tl-card-sm {
+        transform: scale(0.9);
+        transform-origin: top left;
+    }
+
+    .tl-card-xs {
+        transform: scale(0.8);
+        transform-origin: top left;
+    }
+
+    /* === Token-driven card tile (shop/hand) === */
+    .match-card-tile {
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.10), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+        border: 2px solid #e2e8f0;
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: var(--tile-gap);
+        padding: var(--tile-pad-y) var(--tile-pad-x);
+        max-width: var(--tile-max-w);
+        cursor: pointer;
+        transition: background-color 0.15s, transform 0.1s, box-shadow 0.15s;
+        overflow: hidden;
+        min-width: 72px;
+        min-height: var(--tile-min-h);
+        position: relative;
+    }
+
+    .match-card-tile:hover {
+        background: linear-gradient(135deg, #f1f5f9 60%, #e0e7ef 100%);
+        transform: scale(1.045) translateY(-2px);
+        box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.16), 0 2px 8px 0 rgba(0, 0, 0, 0.10);
+        z-index: 2;
+    }
+
+    .match-card-image {
+        border-radius: 0.7em;
+        overflow: hidden;
+        flex-shrink: 0;
+        width: var(--tile-img);
+        height: var(--tile-img);
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 4px #0001;
+    }
+
+    .match-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0.5em;
+    }
+
+    .match-card-main {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .match-card-header {
+        font-weight: bold;
+        font-size: 1em;
+        background: linear-gradient(90deg, #c7d2fe 0%, #fbc2eb 100%);
+        color: #222;
+        padding: 0.2em 0.5em 0.1em 0.5em;
+        border-bottom: 1px solid #e0e7ef;
+        border-top-left-radius: 0.7em;
+        border-top-right-radius: 0.7em;
+        text-shadow: 0 1px 0 #fff8;
+        margin-bottom: 0.1em;
+    }
+
+    .match-card-cost {
+        font-weight: bold;
+        color: #b45309;
+        background: #fef3c7;
+        border-radius: 0.5em;
+        padding: 0.1em 0.5em;
+        font-size: 0.9em;
+        margin-left: 0.5em;
+        border: 1px solid #fde68a;
+    }
+
+    .match-card-meta {
+        font-size: 0.8em;
+        font-weight: 500;
+        color: #6366f1;
+        margin-left: 0.2em;
+        margin-bottom: 0.1em;
+    }
+
+    .match-card-stat {
+        font-size: 0.8em;
+        color: #64748b;
+        margin-top: 0.2em;
+        margin-left: 0.2em;
+    }
+
+    .hand-card-hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+        z-index: 10;
+    }
+
+    .match-card-ghost {
+        pointer-events: none;
+        opacity: 0.9;
+        transform: scale(0.95);
+    }
+
+    .board-slot-highlight {
+        @apply border-2 border-emerald-400 bg-emerald-50;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+    }
+
+    .board-highlight-all {
+        @apply border-2 border-emerald-400 bg-emerald-50 rounded-lg;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+    }
+
+    [data-role="board-grid"] {
+        align-items: stretch;
+    }
+
+    button[data-zone="board"] {
+        min-width: 0;
+    }
+
+    /* Board tile: intentionally different sizing (keep explicit) */
+    .board-card-wrapper.match-card-tile {
+        max-width: none;
+        min-width: 0;
+        height: auto;
+        min-height: var(--board-tile-min-h);
+        padding: var(--board-tile-pad-y) var(--board-tile-pad-x);
+        gap: var(--board-tile-gap);
+    }
+
+    .board-card-wrapper .match-card-image {
+        width: var(--board-tile-img);
+        height: var(--board-tile-img);
+    }
+
+    .board-card-wrapper .match-card-header {
+        font-size: 0.85em;
+        padding: 0.15em 0.35em;
+    }
+
+    .board-card-wrapper .match-card-meta {
+        font-size: 0.72em;
+    }
+
+    .board-card-wrapper.match-card-tile:hover {
+        transform: none;
+        box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.10), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    }
+
+    .hand-drop-highlight {
+        @apply border-2 border-blue-400 bg-blue-50 relative;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+    }
+
+    .hand-drop-highlight::after {
+        content: attr(data-drop-hint);
+        position: absolute;
+        top: 0.35rem;
+        right: 0.75rem;
+        padding: 0.1rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        background-color: rgba(59, 130, 246, 0.95);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .shop-drop-highlight {
+        @apply border-2 border-amber-400 bg-amber-50 rounded-lg relative;
+        box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.5);
+    }
+
+    .shop-drop-highlight::after {
+        content: attr(data-drop-hint);
+        position: absolute;
+        top: -0.6rem;
+        right: 0.5rem;
+        padding: 0.1rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        background-color: rgba(217, 119, 6, 0.96);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(217, 119, 6, 0.45);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .match-card-tile.dragging {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .hand-empty-placeholder {
+        display: inline-block;
+        width: 96px;
+        min-width: 96px;
+        height: 88px;
+        min-height: 88px;
+        pointer-events: none;
+        visibility: hidden;
+    }
+
+    .match-card-merge {
+        pointer-events: none;
+    }
+
+    .merge-badge {
+        font-size: 10px;
+        padding-left: 6px;
+        padding-right: 6px;
+        height: 18px;
+        min-width: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transform: scale(0.82);
+        transform-origin: center right;
+        transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .match-card-tile .merge-badge {
+        transform: scale(0.82);
+    }
+
+    .board-card-wrapper .merge-badge {
+        transform: scale(0.78);
+    }
+
+    .merge-badge.pulse {
+        transform: scale(1.04);
+        box-shadow: 0 6px 18px rgba(34, 197, 94, 0.26);
+    }
+
+    /* SVG scaling: keep !important because inline width/style can fight this */
+    button[data-zone="board"] .match-card-svg-container > svg,
+    .board-card-wrapper .match-card-svg-container > svg {
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    /* Modal carousel slide sizing and constraints */
+    .shop-card-wrapper.modal-slide-wrapper {
+        width: var(--modal-slide-w);
+        max-width: var(--modal-slide-w);
+        box-sizing: border-box;
+        /* allow shadows and hover lifts to be visible outside the wrapper */
+        overflow: visible;
+        display: block;
+        padding: 0.12rem;
+        background: none;
+    }
+
+    .shop-card-wrapper.modal-slide-wrapper > tl-card {
+        width: 100% !important;
+        display: block !important;
+        max-height: var(--modal-slide-max-h) !important;
+        box-sizing: border-box;
+    }
+
+    .shop-card-wrapper.modal-slide-wrapper .card-wrapper,
+    .shop-card-wrapper.modal-slide-wrapper .match-card-svg-container {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .shop-card-wrapper.modal-slide-wrapper svg.card-svg {
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    .modal-actions {
+        /* place actions absolutely so they do not change slide vertical centering */
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 30;
+        pointer-events: auto;
+        margin-top: 0.5rem;
+        display: none; /* toggled by JS */
+    }
+
+    .shop-card-modal-slide {
+        display: inline-flex;
+        align-items: center; /* center slides vertically */
+        justify-content: center;
+        position: relative; /* so modal-actions absolute is positioned relative to slide */
+        transition: transform 160ms ease, box-shadow 160ms ease;
+        will-change: transform;
+    }
+
+    /* Active slide gets a subtle scale + lift for emphasis */
+    .shop-card-modal-slide.active-modal-slide {
+        transform: translateY(-8px) scale(1.03);
+        z-index: 20;
+    }
+
+    /* Hover lift for non-active slides when pointer is over them */
+    .shop-card-modal-slide:hover {
+        transform: translateY(-6px) scale(1.01);
+        z-index: 15;
+    }
+
+    /* Ensure the tl-card inside the slide remains centered and not pushed by actions */
+    .shop-card-modal-slide .shop-card-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* ensure slide content stays above reserved area and doesn't get covered */
+        margin-bottom: 0.5rem;
+    }
+
+    /* Modal layout tweaks to keep actions below the carousel and avoid overlap */
+    .shop-modal-content {
+        /* ensure we use full height and stack carousel + actions vertically */
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .shop-modal-carousel {
+        /* take available vertical space and keep carousel centered inside */
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+    }
+
+    .shop-modal-inner {
+        /* make sure the inner carousel can scroll horizontally and not be clipped */
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        /* reserve vertical space for action buttons */
+        padding-bottom: 3.5rem; /* ~56px */
+
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE 10+ */
+    }
+
+    .shop-modal-inner::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Webkit */
+        height: 0;
+        width: 0;
+    }
+
+    /* Disable text selection and tap highlight inside slides to prevent
+       accidental selection during mouse drag, and avoid touch tap highlight */
+    .shop-card-modal-slide,
+    .shop-card-modal-slide *,
+    .shop-card-wrapper,
+    .shop-card-wrapper * {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -ms-user-select: none !important;
+        -moz-user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+    }
+
+    /* Keep pointer events none on inner tl-card content (already set in JS)
+       but ensure slides themselves do not produce :active visual changes */
+    .shop-card-modal-slide:active {
+        /* avoid extra transform on tap */
+        transform: none !important;
+    }
+
+    /* Disable pointer events inside slides so taps don't activate inner controls or :active transforms */
+    .shop-card-modal-slide * {
+        pointer-events: none !important;
+    }
+
+    /* Also ensure internal card tiles do not apply active transforms on touch */
+    .shop-card-modal-slide .match-card-tile:active,
+    .shop-card-modal-slide .match-card-tile:focus {
+        transform: none !important;
+    }
+
+    /* Make slides passive to touch activation: allow JS to handle horizontal pan
+       while avoiding accidental browser-generated :active styles on touch */
+    .shop-modal-inner,
+    .shop-card-modal-slide {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        touch-action: pan-y;
+    }
+
+    /* Ensure no :active transforms or transitions occur for any nested element
+       inside modal slides (covers SVGs, wrappers, etc.) */
+    .shop-card-modal-slide:active,
+    .shop-card-modal-slide *:active,
+    .shop-card-modal-slide:focus,
+    .shop-card-modal-slide *:focus {
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+    }
+
+    /* Extra safeguard: ensure tl-card and its inner wrapper do not receive pointer events */
+    .shop-card-modal-slide tl-card,
+    .shop-card-modal-slide tl-card *,
+    .shop-card-modal-slide .card-wrapper,
+    .shop-card-modal-slide .card-wrapper * {
+        pointer-events: none !important;
+    }
+
+    /* On touch devices (no hover), disable hover transforms to avoid 'push-up' on first tap */
+    @media (hover: none) {
+        .shop-card-modal-slide:hover {
+            transform: none !important;
+        }
+
+        .shop-card-modal-slide {
+            cursor: default !important;
+        }
+    }
+
+    /* For touch devices, make slides non-interactive so taps don't activate or focus them.
+       The carousel container still receives pointer events to allow swipe/drag. */
+    @media (pointer: coarse) {
+        .shop-card-modal-slide {
+            pointer-events: none !important;
+        }
+
+        /* Keep the inner container handling touch pan */
+        .shop-modal-inner {
+            touch-action: pan-y;
+        }
+    }
+}

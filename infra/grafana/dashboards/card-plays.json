@@ -1,0 +1,25 @@
+{
+  "uid": "card-plays",
+  "title": "Card Plays",
+  "panels": [
+    {
+      "type": "table",
+      "title": "Top played cards (last 1h)",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "topk(20, sum by (card_id) (increase(card_played_total[1h])))", "refId": "A" }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Card plays over time (top cards)",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "sum by (card_id) (increase(card_played_total[5m]))", "refId": "A" }
+      ],
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 8 }
+    }
+  ],
+  "schemaVersion": 36
+}

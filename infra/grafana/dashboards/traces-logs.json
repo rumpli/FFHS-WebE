@@ -1,0 +1,22 @@
+{
+  "uid": "traces-logs",
+  "title": "Traces & Logs",
+  "panels": [
+    {
+      "type": "logs",
+      "title": "Recent backend logs (Loki)",
+      "datasource": "Loki",
+      "targets": [
+        { "expr": "{service=\"backend\"}", "refId": "A" }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "type": "text",
+      "title": "Explore traces in Tempo",
+      "options": { "content": "Open the Grafana Explore -> Traces panel and select the Tempo data source to search for spans named `card.play` or `match.start`." },
+      "gridPos": { "h": 2, "w": 12, "x": 0, "y": 8 }
+    }
+  ],
+  "schemaVersion": 36
+}

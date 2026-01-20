@@ -1,0 +1,426 @@
+/* ========= VS BAR: match old behavior (<=700) ========= */
+
+/* Hide verbose labels on compact+ (<=700) */
+:root.ui-compact match-vs-bar .vs-main-label,
+:root.ui-compact match-vs-bar .hp-numeric,
+:root.ui-compact match-vs-bar .hpbar-label,
+:root.ui-mini match-vs-bar .vs-main-label,
+:root.ui-mini match-vs-bar .hp-numeric,
+:root.ui-mini match-vs-bar .hpbar-label {
+    display: none !important;
+}
+
+:root.ui-compact .upgrade-arrow,
+:root.ui-mini .upgrade-arrow,
+:root.ui-tight .upgrade-arrow {
+    display: flex !important;
+}
+
+/* Show center pills on compact+ (<=700) */
+:root.ui-compact match-vs-bar .vs-center-extra,
+:root.ui-mini match-vs-bar .vs-center-extra {
+    display: flex !important;
+    gap: 6px;
+    margin-left: 20px;
+    align-items: center;
+}
+
+:root.ui-compact match-vs-bar .vs-center-extra .pill {
+    font-size: var(--vs-bar-pill-font) !important;
+}
+
+/* Ensure sections under the match-vs-bar reserve space for the profile/shop buttons on compact/tight/mini */
+:root.ui-mini match-vs-bar section {
+    /* reserve space equal to the profile button size plus 10px */
+    padding-right: calc(var(--profile-btn-size, 2.2rem) + 10px) !important;
+    padding-left: calc(var(--main-pad-x)) !important;
+}
+
+/* ========= LAYOUT ========= */
+
+/* Tighten header on tight+ (<=820) */
+:root.ui-tight match-header header {
+    height: 40px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+/* Token-driven main padding */
+:root.ui-tight main,
+:root.ui-compact main,
+:root.ui-mini main {
+    padding-left: var(--main-pad-x) !important;
+    padding-right: var(--main-pad-x) !important;
+    padding-top: var(--main-pad-top) !important;
+    padding-bottom: var(--main-pad-bottom) !important;
+}
+
+/* Only hide inline shop on mini (<=600) */
+:root.ui-mini match-shop {
+    display: none !important;
+}
+
+:root.ui-compact .shop-drop-highlight::after,
+:root.ui-mini .shop-drop-highlight::after,
+:root.ui-tight .shop-drop-highlight::after {
+    left: 80% !important;
+    z-index: 9999 !important;
+    width: 110px !important;
+}
+
+/* Hand/board constraints on compact+ (<=700) */
+:root.ui-compact match-hand,
+:root.ui-mini match-hand {
+    max-height: 88px;
+    overflow: auto;
+}
+
+:root.ui-compact match-board,
+:root.ui-mini match-board {
+    flex: 1 1 auto;
+    min-height: 90px;
+    max-height: calc(100vh - 120px);
+    overflow: auto;
+}
+
+/* Chat/audio tighter on mini (<=600) */
+:root.ui-mini audio-mini-player {
+    right: 6px !important;
+    bottom: 6px !important;
+    transform: scale(0.85);
+    z-index: 65;
+}
+
+:root.ui-mini .chat-overlay-wrap {
+    right: 46px !important;
+    bottom: 6px !important;
+}
+
+:root.ui-mini .chat-overlay-wrap #panel {
+    max-width: 64vw !important;
+    max-height: 90vh !important;
+    transform: none !important;
+}
+
+/* Profile button sizing (use exact id used in markup #btn-profile) */
+:root.ui-tight #btn-profile,
+:root.ui-compact #btn-profile,
+:root.ui-mini #btn-profile {
+    border-radius: 8px !important;
+    width: var(--profile-btn-size) !important;
+    height: var(--profile-btn-size) !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+    top: 6px !important;
+    right: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Mobile shop toggle visible on small landscape (JS adds #btn-mobile-shop) */
+@media (orientation: landscape) and (max-height: 600px), (orientation: landscape) and (max-width: 700px) {
+    #btn-mobile-shop {
+        justify-content: center;
+        align-items: center;
+        display: flex !important;
+    }
+
+    /* Shop button sizing via tokens */
+    #btn-mobile-shop {
+        box-sizing: border-box;
+        width: var(--shop-btn-size) !important;
+        min-width: var(--shop-btn-min-w) !important;
+        height: var(--shop-btn-size) !important;
+        padding: var(--shop-btn-pad) !important;
+        font-size: var(--shop-btn-font-size) !important;
+        border-radius: 9999px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: .25rem !important;
+    }
+}
+
+/* Tower upgrade button compression for compact/mini */
+:root.ui-compact match-vs-bar #btn-tower-upgrade,
+:root.ui-mini match-vs-bar #btn-tower-upgrade {
+    box-sizing: border-box !important;
+    border-radius: 9999px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 20px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    position: relative !important;
+}
+
+:root.ui-compact match-vs-bar #btn-tower-upgrade > .font-semibold,
+:root.ui-mini match-vs-bar #btn-tower-upgrade > .font-semibold {
+    display: none !important;
+}
+
+:root.ui-compact match-vs-bar #btn-tower-upgrade > .inline-flex,
+:root.ui-mini match-vs-bar #btn-tower-upgrade > .inline-flex {
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    position: absolute !important;
+    bottom: 4px !important;
+    left: 50% !important;
+    transform: translate(-50%) !important;
+}
+
+:root.ui-compact match-vs-bar #btn-tower-upgrade .upgrade-cost-wrapper,
+:root.ui-mini match-vs-bar #btn-tower-upgrade .upgrade-cost-wrapper,
+:root.ui-mini #btn-mobile-shop-badge,
+:root.ui-compact #btn-mobile-shop-badge {
+    color: #fff !important;
+    background: #ef4444 !important;
+    border-radius: 9999px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-width: 15px !important;
+    height: 15px !important;
+    width: 15px !important;
+    padding: .15rem .4rem !important;
+    font-size: 9px !important;
+    display: inline-flex !important;
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+    transform: translate(3px) !important;
+    box-shadow: 0 4px 10px #0000001f !important;
+}
+
+/* hide the small gold dot next to upgrade costs on tight/compact/mini */
+:root.ui-tight match-vs-bar #btn-tower-upgrade .bg-amber-400,
+:root.ui-compact match-vs-bar #btn-tower-upgrade .bg-amber-400,
+:root.ui-mini match-vs-bar #btn-tower-upgrade .bg-amber-400 {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Hide shop placeholder but keep layout spacing */
+.match-shop-placeholder {
+    visibility: hidden;
+    pointer-events: none;
+    display: block;
+}
+
+.match-shop-placeholder + * {
+    margin-top: 0;
+}
+
+/* Tighten spacing further on the smallest mini layout */
+:root.ui-mini .gap-3 {
+    /* disable the utility gap-3 for mini to make layout tighter */
+    gap: calc(var(--spacing) * 0) !important;
+}
+
+:root.ui-mini match-hand .card,
+:root.ui-mini match-board .card,
+:root.ui-mini match-shop .card {
+    /* reduce card padding inside match areas on mini */
+    padding: calc(var(--spacing) * 2) !important;
+}
+
+:root.ui-mini .card-detail-inner tl-card {
+    margin-bottom: 0;
+    transform: scale(1);
+}
+
+:root.ui-mini .card-detail-inner > div {
+    margin-bottom: 2px;
+    gap: 2px;
+}
+
+/* reduce gap on the central container used in match-screen */
+:root.ui-mini .w-full.max-w-5xl.flex.flex-col.gap-3,
+:root.ui-mini .w-full.max-w-5xl.flex-col.gap-3,
+:root.ui-mini .flex-col.gap-3 {
+    gap: calc(var(--spacing) * 0) !important;
+}
+
+:root.ui-mini [data-role="hand-strip"] {
+    padding-bottom: 4px !important;
+    gap: .28rem !important;
+}
+
+:root.ui-mini .match-card-tile {
+    padding: .12rem .18rem !important;
+    gap: .25rem !important;
+    min-height: 3.5rem !important;
+}
+
+:root.ui-mini .hand-empty-placeholder {
+    height: 56px !important;
+    min-height: 56px !important;
+}
+
+/* also ensure top-level container gaps used around the match screen are reduced */
+:root.ui-mini .game-screen > .w-full > .flex-col {
+    gap: calc(var(--spacing) * 1) !important;
+}
+
+/* Hide health badge component on tight / compact / mini */
+:root.ui-tight health-badge,
+:root.ui-compact health-badge,
+:root.ui-mini health-badge {
+    display: none !important;
+    pointer-events: none !important;
+}
+
+/* Keep the main match header visible on tight/compact layouts (e.g. iPad sizes).
+   Only hide the header on the smallest 'mini' layout to preserve screen real-estate
+   on very small devices. Hiding the entire header at ui-tight/ui-compact caused
+   the timer/gold/round HUD to disappear on medium-large tablets (e.g. 1180x820). */
+:root.ui-mini match-header {
+    display: none !important;
+}
+
+/* Responsive form constraints for tight/compact/mini layouts */
+:root.ui-tight .form,
+:root.ui-compact .form,
+:root.ui-mini .form {
+    max-width: calc(100vw - 2 * var(--main-pad-x));
+    padding-left: calc(var(--main-pad-x) * 0.5) !important;
+    padding-right: calc(var(--main-pad-x) * 0.5) !important;
+    padding-top: calc(var(--main-pad-top) + 4px) !important;
+    padding-bottom: calc(var(--main-pad-bottom) + 4px) !important;
+    max-height: calc(100vh - (var(--main-pad-top) + var(--main-pad-bottom) + 40px));
+}
+
+/* Make buttons/rows slightly denser on compact/mini so forms occupy less vertical space */
+:root.ui-compact .form .form-row,
+:root.ui-mini .form .form-row {
+    margin-bottom: 0.75rem !important;
+}
+
+:root.ui-mini .form-row {
+    margin-bottom: 0.5rem !important;
+}
+
+/* For small landscape widths, reduce the width of form inner blocks to fit */
+@media (orientation: landscape) and (max-height: 700px) {
+    .form-row {
+        width: 94% !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    #rounds-list {
+        max-height: 40vh;
+    }
+
+    #rounds-table-header th:nth-child(1),
+    #rounds-table td:nth-child(1) {
+        width: 52px;
+        min-width: 52px;
+        max-width: 52px;
+    }
+
+    #rounds-table-header th:nth-child(3),
+    #rounds-table td:nth-child(3) {
+        width: 70px;
+        min-width: 70px;
+        max-width: 70px;
+    }
+
+    #rounds-table-header th:nth-child(4),
+    #rounds-table td:nth-child(4) {
+        width: 110px;
+        min-width: 110px;
+        max-width: 110px;
+    }
+
+    .summary-row {
+        grid-template-columns: 1fr;
+    }
+
+    .round-summary .hp-bar-wrap {
+        width: 150px;
+    }
+
+    .hp-numeric {
+        display: none;
+    }
+}
+
+:root.ui-tight #rounds-list,
+:root.ui-compact #rounds-list,
+:root.ui-mini #rounds-list {
+    display: none !important;
+}
+
+:root.ui-tight match-result-screen .card,
+:root.ui-compact match-result-screen .card,
+:root.ui-mini match-result-screen .card {
+    padding-top: 4px !important;
+    padding-bottom: 2px !important;
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+}
+
+:root.ui-tight #replay-root,
+:root.ui-compact #replay-root,
+:root.ui-mini #replay-root {
+    margin: 0 !important;
+}
+
+/* Responsive: tighten layout for smaller screens using project's root UI tokens */
+:root.ui-tight profile-screen,
+:root.ui-compact profile-screen,
+:root.ui-mini profile-screen {
+    padding-left: var(--main-pad-x, 12px) !important;
+    padding-right: var(--main-pad-x, 12px) !important;
+}
+
+/* On compact/mini, reduce stat tile sizes and ensure match list doesn't exceed available space */
+:root.ui-compact #match-list,
+:root.ui-mini #match-list,
+:root.ui-tight #match-list {
+    max-height: calc(40vh - var(--main-pad-top, 0px)) !important;
+}
+
+:root.ui-compact profile-screen .card,
+:root.ui-mini profile-screen .card,
+:root.ui-tight profile-screen .card {
+    padding: calc(var(--spacing, 8px) * 1) !important;
+}
+
+:root.ui-tight profile-screen h2,
+:root.ui-compact profile-screen h2,
+:root.ui-mini profile-screen h2 {
+    font-size: 1rem !important;
+}
+
+:root.ui-tight profile-screen .card p,
+:root.ui-compact profile-screen .card p,
+:root.ui-mini profile-screen .card p,
+:root.ui-tight profile-screen .card .text-sm,
+:root.ui-compact profile-screen .card .text-sm,
+:root.ui-mini color-profile .card .text-sm {
+    font-size: 0.65rem !important;
+}
+
+:root.ui-compact profile-screen .match-history,
+:root.ui-mini profile-screen .match-history,
+:root.ui-tight profile-screen .match-history {
+    margin-top: 0.5rem !important;
+}
+
+:root.ui-compact profile-screen #back,
+:root.ui-mini profile-screen #back,
+:root.ui-tight profile-screen #back {
+    margin-top: 0.5rem !important;
+}

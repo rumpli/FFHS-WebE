@@ -1,0 +1,198 @@
+:root {
+    /* VS bar / match bar */
+    --vs-bar-w: 14rem;
+    --vs-bar-h: 3rem;
+    --vs-bar-px: 4rem;
+    --vs-bar-gap: 8px;
+    --vs-bar-font-lg: 3rem; /* large central vs text */
+    --vs-bar-font-sm: .9rem; /* player name / small label */
+    --vs-bar-pill-font: 11px;
+
+    /* tip for sharp vs-bar ends (percentage of width) */
+    --vs-bar-tip: 6%;
+
+    /* HP label */
+    --hpbar-label-fs: 6px;
+
+    /* Tile / card sizes */
+    --tile-min-h: 88px;
+    --tile-pad-y: .4rem;
+    --tile-pad-x: .5rem;
+    --tile-gap: .4rem;
+    --tile-max-w: 220px;
+    --tile-img: 48px;
+
+    /* Board tiles (in-match board) */
+    --board-tile-min-h: 3.5rem;
+    --board-tile-pad-y: .25rem;
+    --board-tile-pad-x: .35rem;
+    --board-tile-gap: .35rem;
+    --board-tile-img: 34px;
+
+    /* Detail / popup / modal constraints */
+    --popup-max-w: min(520px, 94vw);
+    --popup-max-h: 92vh;
+    --modal-slide-w: 200px;
+    --modal-slide-max-h: 52vh;
+
+    /* main layout paddings */
+    --main-pad-x: 1rem;
+    --main-pad-top: .75rem;
+    --main-pad-bottom: 4.5rem;
+
+    /* profile / header tokens */
+    --profile-btn-size: 2.2rem;
+    --profile-btn-pad: .35rem .6rem;
+    --header-h: 56px;
+
+    /* match/main specific paddings (mapped to main-pad defaults by default) */
+    --match-main-pad-x: var(--main-pad-x);
+    --match-main-pad-top: var(--main-pad-top);
+    --match-main-pad-bottom: var(--main-pad-bottom);
+
+    /* card detail inner default constraints */
+    --card-detail-max-w: min(520px, 94vw);
+
+    /* utility tweaks */
+    --tile-img-border-radius: .5em;
+}
+
+/* Responsive: landscape/short heights -> tighter UI */
+:root.ui-tight {
+    /* general vs bar compression */
+    --vs-bar-w: 100%;
+    --vs-bar-h: 2.4rem;
+    --vs-bar-px: 3.6rem;
+    --vs-bar-gap: 6px;
+    --vs-bar-font-lg: 2.6rem;
+    --vs-bar-font-sm: .95rem;
+    --vs-bar-pill-font: 11px;
+
+    /* slightly bigger tip on tight to keep visual shape */
+    --vs-bar-tip: 7%;
+
+    /* tiles */
+    --tile-min-h: 56px;
+    --tile-pad-y: .18rem;
+    --tile-pad-x: .28rem;
+    --tile-gap: .28rem;
+    --tile-max-w: 160px;
+    --tile-img: 40px;
+
+    /* popup */
+    --popup-max-w: 94vw;
+    --popup-max-h: 90vh;
+
+    /* main padding --- use small pixel values to keep consistent with compact layout */
+    --main-pad-x: 6px;
+    --main-pad-top: 4px;
+    --main-pad-bottom: 56px;
+
+    /* board tile tweaks */
+    --board-tile-min-h: 3.25rem; /* ~52px */
+    --board-tile-pad-y: .20rem;
+    --board-tile-pad-x: .30rem;
+    --board-tile-gap: .30rem;
+    --board-tile-img: 32px;
+
+    /* profile / header */
+    --profile-btn-size: 2rem;
+    --profile-btn-pad: .28rem .5rem;
+    --header-h: 40px;
+
+    /* SHOP button tighter */
+    --shop-btn-size: 2.2rem;
+    --shop-btn-min-w: 2.2rem;
+    --shop-btn-pad: .25rem .45rem;
+    --shop-btn-font-size: .88rem;
+
+    /* match mapping */
+    --match-main-pad-x: var(--main-pad-x);
+    --match-main-pad-top: var(--main-pad-top);
+    --match-main-pad-bottom: var(--main-pad-bottom);
+}
+
+:root.ui-compact {
+    --vs-bar-h: 2.2rem;
+    --vs-bar-px: 3.5rem;
+    --vs-bar-gap: 6px;
+    --vs-bar-font-lg: 2.2rem;
+    --vs-bar-font-sm: .85rem;
+    --vs-bar-pill-font: 11px;
+
+    /* compact tip */
+    --vs-bar-tip: 6.5%;
+
+    --tile-min-h: 52px;
+    --tile-pad-y: .10rem;
+    --tile-pad-x: .22rem;
+    --tile-gap: .26rem;
+    --tile-max-w: 150px;
+    --tile-img: 36px;
+
+    --popup-max-h: 92vh;
+
+    --board-tile-min-h: 3.05rem; /* ~49px */
+    --board-tile-pad-y: .16rem;
+    --board-tile-pad-x: .26rem;
+    --board-tile-gap: .26rem;
+    --board-tile-img: 30px;
+
+    --profile-btn-size: 1.9rem;
+    --profile-btn-pad: .25rem .45rem;
+
+    /* SHOP button compact */
+    --shop-btn-size: 2.0rem;
+    --shop-btn-min-w: 2.0rem;
+    --shop-btn-pad: .22rem .4rem;
+    --shop-btn-font-size: .82rem;
+}
+
+:root.ui-mini {
+    --vs-bar-h: 1.9rem;
+    --vs-bar-px: 3.35rem;
+    --vs-bar-gap: 6px;
+    --vs-bar-font-lg: 1.9rem;
+    --vs-bar-font-sm: .8rem;
+    --vs-bar-pill-font: 10px;
+
+    /* smaller tip for very narrow UI so it doesn't eat too much center space */
+    --vs-bar-tip: 5%;
+
+    --hpbar-label-fs: 5px;
+
+    --tile-min-h: 44px;
+    --tile-pad-y: .06rem;
+    --tile-pad-x: .18rem;
+    --tile-gap: .22rem;
+    --tile-max-w: 140px;
+    --tile-img: 32px;
+
+    --modal-slide-w: min(160px, 82vw);
+    --modal-slide-max-h: 48vh;
+
+    --main-pad-x: 4px;
+    --main-pad-top: 4px;
+    --main-pad-bottom: 20px;
+
+    --board-tile-min-h: 2.8rem; /* ~45px */
+    --board-tile-pad-y: 0rem;
+    --board-tile-pad-x: 0rem;
+    --board-tile-gap: .22rem;
+    --board-tile-img: 28px;
+
+    --profile-btn-size: 1.6rem;
+    --profile-btn-pad: .18rem .32rem;
+
+    /* SHOP button mini */
+    --shop-btn-size: 1.6rem;
+    --shop-btn-min-w: 1.6rem;
+    --shop-btn-pad: .15rem .28rem;
+    --shop-btn-font-size: .55rem;
+
+    --match-main-pad-x: 4px;
+    --match-main-pad-top: 4px;
+    --match-main-pad-bottom: 48px;
+}
+
+/* End tokens */

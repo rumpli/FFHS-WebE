@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "fs-extra": "^11.3.3",
+    "glob": "^13.0.0",
+    "strip-comments": "^2.0.1"
+  }
+}

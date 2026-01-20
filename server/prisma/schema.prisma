@@ -1,0 +1,403 @@
+/*
+ * schema.prisma
+ *
+ * Database schema for Towerlords (Prisma). This file defines the core
+ * relational model for users, authentication sessions, card definitions,
+ * player inventories, decks, matches, lobbies and chat messages.
+ *
+ * High-level notes:
+ * - Use PostgreSQL as configured via DATABASE_URL.
+ * - Models intentionally keep several JSON columns (e.g. match result,
+ *   per-round state, card config) to preserve flexibility for replay and
+ *   evolving game rules without frequent schema migrations.
+ * - Relationship names and indexes are chosen for common queries (e.g.
+ *   match state lookup, lobby operations).
+ */
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+/**
+ * ===========================
+ * ENUMS
+ * ===========================
+ */
+
+enum CardType {
+  ATTACK
+  DEFENSE
+  BUFF
+  ECONOMY
+}
+
+enum CardRarity {
+  UNCOMMON
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum MatchStatus {
+  LOBBY
+  QUEUE
+  RUNNING
+  FINISHED
+  CANCELLED
+}
+
+enum LobbyStatus {
+  OPEN
+  FULL
+  STARTED
+  CLOSED
+}
+
+enum ActionType {
+  REGISTER
+  LOGIN
+  BUY_CARD
+  SELL_CARD
+  COMBINE_CARDS
+  PLAY_CARDS
+  ROUND_START
+  ROUND_RESULT
+  CHAT_SEND
+  SYSTEM
+}
+
+/**
+ * ===========================
+ * CORE USER & AUTH
+ * ===========================
+ */
+
+// The `User` model stores basic account and progression information. Most
+// gameplay aggregates (wins, damage, xp) are kept here for quick leaderboard
+// queries. Relations connect to sessions, inventories, match participation
+// and chat messages.
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  username     String @unique
+  email        String @unique
+  // bcrypt/argon2 hash, not plaintext
+  passwordHash String
+
+  // basic stats / meta progression
+  gamesPlayed      Int @default(0)
+  gamesWon         Int @default(0)
+  totalDamageOut   Int @default(0)
+  totalDamageTaken Int @default(0)
+  maxSurvivalRound Int @default(0)
+
+  // optional: meta progression (e.g. unlocked packs/cards)
+  xp    Int @default(0)
+  level Int @default(1)
+
+  // RELATIONS
+  sessions         Session[]
+  inventories      CardInventory[]
+  matches          MatchPlayer[] // participation in matches
+  lobbies          Lobby[]         @relation("LobbyOwner") // lobbies owned by this user
+  lobbyMemberships LobbyPlayer[]   @relation("LobbyMember") // lobbies joined by this user
+  chatMessages     ChatMessage[]   @relation("UserChatMessages")
+  wonMatches       Match[]         @relation("MatchWinner") // matches this user won
+  Deck             Deck[]
+}
+
+/**
+ * Auth session to support JWT / refresh tokens, device logins, etc.
+ */
+model Session {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  userAgent String? // optional: browser info
+  ip        String? // optional: last IP
+}
+
+/**
+ * ===========================
+ * CARD LIBRARY & INVENTORY
+ * ===========================
+ */
+
+/**
+ * Static card definitions for the game. These are canonical card templates
+ * referenced by decks and inventories. Keep balance knobs as typed columns
+ * and flexible `config` for evolving behavior.
+ */
+model CardDefinition {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  description String?
+  image       String?
+
+  type   CardType
+  rarity CardRarity?
+  cost   Int // shop gold cost
+
+  collectible Boolean @default(true)
+
+  // balance knobs
+  baseDamage     Int? // for attack cards
+  baseHpBonus    Int? // for defense cards
+  baseDpsBonus   Int? // for defense cards
+  buffMultiplier Float? // e.g. 1.2 for +20% DPS
+
+  // JSON blob for flexible effects
+  config Json?
+
+  inventories CardInventory[]
+
+  DeckCard DeckCard[]
+}
+
+/**
+ * Player's meta inventory outside matches.
+ */
+model CardInventory {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  card   CardDefinition @relation(fields: [cardId], references: [id])
+  cardId String
+
+  // how many copies the user owns for meta progression
+  quantity Int @default(1)
+  level    Int @default(1)
+
+  acquiredAt DateTime @default(now())
+}
+
+/**
+ * ===========================
+ * DECKS
+ * ===========================
+ */
+
+model Deck {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name    String
+  // Later: ownerId for user-specific decks
+  owner   User?   @relation(fields: [ownerId], references: [id])
+  ownerId String?
+
+  cards DeckCard[]
+}
+
+model DeckCard {
+  id     String @id @default(cuid())
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  deckId String
+
+  card   CardDefinition @relation(fields: [cardId], references: [id])
+  cardId String
+
+  copies    Int  @default(1)
+  slotIndex Int?
+}
+
+/**
+ * ===========================
+ * MATCHES, PLAYERS, ROUNDS, REPLAY
+ * ===========================
+ */
+
+model Match {
+  id        String      @id @default(cuid())
+  status    MatchStatus @default(QUEUE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  round Int @default(0)
+
+  // winner or null while running
+  winner   User?   @relation("MatchWinner", fields: [winnerId], references: [id])
+  winnerId String?
+
+  // Persisted match lifecycle timestamps and canonical result JSON
+  startedAt  DateTime? // optional explicit start time (first round)
+  finishedAt DateTime? // when the match ended
+  result     Json? // canonical aggregated match result (replay + stats)
+
+  players      MatchPlayer[]
+  rounds       MatchRound[]
+  actions      MatchAction[]
+  chatMessages ChatMessage[]
+  Lobby        Lobby[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+/**
+ * Link table between User and Match. Also holds per-match stats.
+ */
+model MatchPlayer {
+  id      String @id @default(cuid())
+  match   Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  matchId String
+
+  isReady Boolean @default(false)
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  // Which Deck this player used to seed their in-match deck (if any).
+  deckId String?
+
+  seat         Int? // position in match (0..7)
+  isEliminated Boolean @default(false)
+  finalRank    Int? // 1 for winner, etc.
+
+  // meta stats for this match
+  totalDamageOut   Int           @default(0)
+  totalDamageTaken Int           @default(0)
+  goldEarned       Int           @default(0)
+  MatchAction      MatchAction[]
+
+  /// Per-player in-match state snapshot (used to drive MATCH_STATE)
+  /// This keeps the server authoritative for the same fields the frontend shows
+  /// in MatchUiState and the board.
+  state Json?
+
+  // Persisted per-player aggregated stats (JSON for flexibility)
+  stats Json?
+
+  @@index([matchId, userId])
+}
+
+/**
+ * Per-round summary / snapshot.
+ */
+model MatchRound {
+  id      String @id @default(cuid())
+  match   Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  matchId String
+
+  round     Int
+  createdAt DateTime @default(now())
+
+  // aggregate data – client can use this for "ROUND_RESULT"
+  // Example: { "damageOut": 19, "damageIn": 12, "towerHp": 45, "lives": 3 }
+  summary Json?
+
+  // full state snapshot for replay (tower stats, decks, etc.)
+  state Json?
+
+  // per-round timeline of battle events for replay
+  events Json?
+
+  // extended replay payload for battle animation parity (events + sim hints)
+  replay Json?
+
+  @@unique([matchId, round])
+}
+
+/**
+ * Append-only log of actions for replay (FA-008).
+ * payload is the JSON message that came over WebSocket / was applied.
+ */
+model MatchAction {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  match   Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  matchId String
+
+  player        MatchPlayer? @relation(fields: [matchPlayerId], references: [id])
+  matchPlayerId String?
+
+  round Int
+  type  ActionType
+
+  // raw JSON of the action, e.g. { "type":"BUY_CARD","cardId":"c17" }
+  payload Json
+}
+
+/**
+ * ===========================
+ * LOBBY & CHAT
+ * ===========================
+ */
+
+model Lobby {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  code   String?     @unique // for private lobbies / invites
+  status LobbyStatus @default(OPEN)
+
+  owner   User   @relation("LobbyOwner", fields: [ownerId], references: [id])
+  ownerId String
+
+  maxPlayers Int @default(2)
+
+  players LobbyPlayer[]
+  match   Match?        @relation(fields: [matchId], references: [id])
+
+  chatMessages ChatMessage[]
+  matchId      String?
+}
+
+/**
+ * Players in a lobby before match start.
+ */
+model LobbyPlayer {
+  id      String @id @default(cuid())
+  lobby   Lobby  @relation(fields: [lobbyId], references: [id], onDelete: Cascade)
+  lobbyId String
+
+  user   User   @relation("LobbyMember", fields: [userId], references: [id])
+  userId String
+
+  joinedAt DateTime @default(now())
+
+  // Deck selected by player while in lobby (optional)
+  deckId String?
+
+  // Ready flag indicating player confirmed ready to start
+  isReady Boolean @default(false)
+}
+
+/**
+ * Chat per match or per lobby (FA-006).
+ */
+model ChatMessage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  lobby   Lobby?  @relation(fields: [lobbyId], references: [id])
+  lobbyId String?
+
+  match   Match?  @relation(fields: [matchId], references: [id])
+  matchId String?
+
+  user   User   @relation("UserChatMessages", fields: [userId], references: [id])
+  userId String
+
+  text String
+}

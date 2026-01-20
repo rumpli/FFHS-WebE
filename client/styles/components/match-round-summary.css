@@ -1,0 +1,182 @@
+/* client/styles/components/match-round-summary.css */
+
+/* Expose a few CSS variables so responsive/landscape-specific styles can override them */
+:root {
+    --mrs-avatar-size: 36px;
+    --mrs-hp-width: 160px;
+    --mrs-gap: 12px;
+    --mrs-padding: 10px;
+    --mrs-font-size: 13px;
+}
+
+.match-round-summary {
+    display: block;
+    box-sizing: border-box;
+}
+
+.match-round-summary .row {
+    background: white;
+    padding: var(--mrs-padding);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Header */
+.match-round-summary .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px
+}
+
+.match-round-summary .left {
+    font-weight: 600
+}
+
+.match-round-summary .muted {
+    color: #666;
+    font-size: var(--mrs-font-size)
+}
+
+/* Players container: allow wrapping and responsive reflow */
+.match-round-summary .players {
+    display: flex;
+    gap: var(--mrs-gap);
+    flex-direction: column;
+    align-items: stretch
+}
+
+/* Player tile - responsive: allow shrink and baseline sizing */
+.match-round-summary .player {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-top: 1px solid #f3f4f6;
+    box-sizing: border-box;
+    min-width: 0; /* allow children to shrink */
+}
+
+.match-round-summary .player:first-child {
+    border-top: none
+}
+
+.match-round-summary .player-meta {
+    display: flex;
+    gap: var(--mrs-gap);
+    align-items: center;
+    min-width: 0
+}
+
+.match-round-summary .avatar {
+    width: var(--mrs-avatar-size);
+    height: var(--mrs-avatar-size);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    flex: 0 0 auto
+}
+
+.match-round-summary .player-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 12rem
+}
+
+/* HP bar and text */
+.match-round-summary .hp-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px
+}
+
+.match-round-summary .hp-bar-outer {
+    width: var(--mrs-hp-width);
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden
+}
+
+.match-round-summary .hp-bar-inner {
+    height: 100%;
+    transition: width 200ms linear
+}
+
+.match-round-summary .hp-text {
+    font-size: 12px;
+    color: #666;
+    min-width: 3.5rem;
+    text-align: right
+}
+
+/* Stats */
+.match-round-summary .player-stats {
+    display: flex;
+    gap: 12px;
+    min-width: 120px;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 0 0 auto;
+}
+
+.match-round-summary .damage {
+    font-size: var(--mrs-font-size);
+    color: #111;
+    display: flex;
+    gap: 6px;
+    align-items: center
+}
+
+.match-round-summary .damage.in {
+    color: #9ca3af
+}
+
+.match-round-summary .arrow {
+    font-size: 14px
+}
+
+.match-round-summary .val {
+    font-weight: 600
+}
+
+/* Larger screens: show players side-by-side and allow each tile to flex */
+@media (min-width: 640px) {
+    .match-round-summary .players {
+        flex-direction: row;
+        flex-wrap: wrap
+    }
+
+    .match-round-summary .player {
+        flex: 1 1 calc(50% - var(--mrs-gap));
+        min-width: 220px
+    }
+
+    .match-round-summary .player-stats {
+        justify-content: center
+    }
+}
+
+/* Tweak for narrow containers: make layout denser */
+@media (max-width: 420px) {
+    :root {
+        --mrs-avatar-size: 30px;
+        --mrs-hp-width: 120px;
+        --mrs-gap: 8px;
+        --mrs-padding: 8px;
+        --mrs-font-size: 12px
+    }
+
+    .match-round-summary .player-name {
+        max-width: 8rem
+    }
+}
+
+/* Leave space for landscape-small overrides — responsive/landscape-small.css can change the vars above */

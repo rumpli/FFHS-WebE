@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@import "./base.css";
+@import "./utilities.css";
+
+@import "./components/audio-chat.css";
+@import "./components/buttons.css";
+@import "./components/cards.css";
+@import "./components/forms.css";
+@import "./components/match-cards.css";
+@import "./components/match-round-summary.css";
+@import "./components/overlays.css";
+@import "./components/vs-bar.css";
+@import "./components/profile.css";
+
+@import "./animations.css";
+
+/* responsive LAST */
+@import "./responsive/tokens.css";
+@import "./responsive/collection.css";
+@import "./responsive/landscape-small.css";

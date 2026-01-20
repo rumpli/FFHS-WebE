@@ -1,0 +1,70 @@
+@layer components {
+    .btn {
+        @apply text-sm py-2 px-3 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 transition;
+    }
+
+    .btn-primary {
+        @apply bg-blue-600 text-white hover:bg-blue-700;
+    }
+
+    .btn-secondary {
+        @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+    }
+
+    .btn-special {
+        @apply bg-orange-400 text-white hover:bg-orange-500;
+    }
+
+    .btn-collection {
+        @apply bg-purple-400 text-white hover:bg-purple-500;
+    }
+
+    .btn-ok {
+        @apply border-green-300 bg-green-50 text-green-700 hover:bg-green-100;
+    }
+
+    .btn-nok {
+        @apply border-red-300 bg-red-50 text-red-700 hover:bg-red-100;
+    }
+
+    .btn-disabled {
+        @apply border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed;
+    }
+
+    .btn-bot-r {
+        @apply absolute bottom-4 right-3;
+    }
+
+    .btn-top-r {
+        @apply absolute top-3 right-3;
+    }
+
+    .btn-bot-l {
+        @apply absolute bottom-4 left-3;
+    }
+
+    .btn-bot-ml {
+        @apply absolute bottom-4 left-20;
+    }
+
+    .button-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding-top: 0.25rem;
+    }
+
+    .btn-arrow {
+        @apply px-2 py-1 text-xs;
+        min-width: 2.25rem;
+    }
+
+    .row-buttons-screen {
+        @apply flex flex-row gap-10;
+    }
+
+    .col-buttons-screen {
+        @apply flex flex-col gap-2 w-44;
+    }
+}

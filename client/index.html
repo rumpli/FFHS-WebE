@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <title>TowerLords</title>
+    <!-- Favicon -->
+    <!-- Standard favicon (ICO) for older browsers -->
+    <link rel="icon" href="/assets/favicon.ico"/>
+    <!-- PNG favicon (32x32) for modern browsers -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png"/>
+    <!-- Apple touch icon (180x180 recommended for iOS) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"/>
+    <meta name="theme-color" content="#ffffff"/>
+</head>
+
+<body class="h-[100dvh] overflow-hidden bg-gray-50 flex flex-col screen-limit relative">
+<!-- Overlay -->
+<div id="rotate-overlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 text-white">
+    <div class="text-center px-6">
+        <p class="text-lg font-semibold mb-2">Please rotate your device</p>
+        <p class="text-sm text-gray-200">Landscape only.</p>
+        <button id="enter-fs" class="btn btn-primary mt-4">Enter fullscreen</button>
+    </div>
+</div>
+
+<!-- Health badge -->
+<div class="fixed top-2 left-2">
+    <health-badge class="text-[10px] sm:text-[12px] md:text-[14px]"></health-badge>
+</div>
+
+<!-- Audio mini player -->
+<div class="fixed bottom-2 right-2 z-40">
+    <audio-mini-player></audio-mini-player>
+</div>
+
+<!-- Screen root -->
+<main id="screen-root" class="landscape-only flex-1 flex flex-col min-h-0 justify-center"></main>
+
+<!-- Orientation/Fullscreen -->
+<script type="module">
+    const overlay = document.getElementById('rotate-overlay');
+    const fsBtn = document.getElementById('enter-fs');
+    const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
+
+    function toggleOverlay() {
+        overlay.classList.toggle('hidden', !isPortrait());
+    }
+
+    fsBtn?.addEventListener('click', async () => {
+        try {
+            await document.documentElement.requestFullscreen();
+            try {
+                if (screen.orientation && typeof screen.orientation.lock === 'function') {
+                    await screen.orientation.lock('landscape');
+                }
+            } catch (e) {
+                // ignore - locking orientation is best-effort and may be blocked by browser
+            }
+        } catch {
+        }
+        toggleOverlay();
+    });
+    window.addEventListener('orientationchange', toggleOverlay);
+    window.addEventListener('resize', toggleOverlay);
+    document.addEventListener('DOMContentLoaded', toggleOverlay);
+</script>
+
+<!-- Runtime config, then load App -->
+<script type="module">
+    const res = await fetch('/config.json', {cache: 'no-store'});
+    window.__CFG__ = await res.json();
+    await import('/src/main.ts');
+</script>
+</body>
+</html>

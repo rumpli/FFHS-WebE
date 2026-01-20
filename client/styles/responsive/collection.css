@@ -1,0 +1,30 @@
+@media (max-width: 480px) {
+    .collection-screen {
+        transform: scale(0.45);
+        margin: -20px 0;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .collection-screen {
+        transform: scale(0.55);
+    }
+
+    .btn {
+        transform: scale(0.7);
+    }
+
+    tl-card {
+        transform: scale(0.9);
+    }
+
+    .card-page-grid {
+        @apply gap-1 mb-1;
+    }
+}
+
+@media (min-width: 769px) {
+    .collection-screen {
+        transform: scale(0.6);
+    }
+}

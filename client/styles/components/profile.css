@@ -1,0 +1,53 @@
+/* client/styles/components/profile.css */
+
+/* Outer wrapper already provided in markup, but ensure consistent card spacing */
+profile-screen .card {
+    box-sizing: border-box;
+}
+
+/* Stat tiles grid: keep gap and allow wrapping on narrow widths */
+profile-screen .grid {
+    gap: 0.5rem;
+}
+
+/* Match history list: make it scrollable and visually separated */
+#match-list {
+    max-height: calc(40vh - var(--main-pad-top, 0px)); /* limit height so other UI stays visible */
+    overflow: auto;
+    padding-right: 6px; /* room for scrollbar */
+}
+
+#match-list .card {
+    margin: 0; /* cards inside list should not add extra margin */
+}
+
+#match-list button.card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Small visual tweak: reduce font-size of per-match meta to keep compact */
+#match-list .text-sm {
+    font-size: 0.6rem;
+}
+
+/* Accessibility: ensure focus outlines are visible for keyboard users */
+#match-list button.card:focus {
+    outline: 2px solid rgba(37, 99, 235, 0.6);
+    outline-offset: 2px;
+}
+
+/* Smooth scrollbar styling (light enhancement) */
+#match-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+#match-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+}
+
+#match-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+

@@ -1,0 +1,35 @@
+{
+  "uid": "lobby-match-overview",
+  "title": "Lobby & Match Overview",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Open Lobbies",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "lobbies_open", "refId": "A" }
+      ],
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "Active Matches",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "matches_active", "refId": "A" }
+      ],
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Matches & Lobbies over time",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "lobbies_open", "refId": "A" },
+        { "expr": "matches_active", "refId": "B" }
+      ],
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 4 }
+    }
+  ],
+  "schemaVersion": 36
+}

@@ -1,0 +1,70 @@
+{
+  "uid": "match-durations",
+  "title": "Match Durations & Deck Usage",
+  "panels": [
+    {
+      "type": "heatmap",
+      "title": "Match duration distribution (buckets)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(rate(match_duration_seconds_bucket[5m])) by (le)",
+          "legendFormat": "duration",
+          "refId": "A"
+        }
+      ],
+      "heatmap": {},
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Average match duration (5m)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(rate(match_duration_seconds_sum[5m])) / sum(rate(match_duration_seconds_count[5m]))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 10 }
+    },
+    {
+      "type": "stat",
+      "title": "Median (p50) duration (5m)",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "histogram_quantile(0.5, sum(rate(match_duration_seconds_bucket[5m])) by (le))", "refId": "A" }
+      ],
+      "gridPos": { "h": 3, "w": 4, "x": 0, "y": 16 }
+    },
+    {
+      "type": "stat",
+      "title": "p90 duration (5m)",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "histogram_quantile(0.9, sum(rate(match_duration_seconds_bucket[5m])) by (le))", "refId": "A" }
+      ],
+      "gridPos": { "h": 3, "w": 4, "x": 4, "y": 16 }
+    },
+    {
+      "type": "piechart",
+      "title": "Deck usage (top decks)",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "topk(10, sum(deck_usage_total) by (deck_id))", "refId": "A" }
+      ],
+      "gridPos": { "h": 6, "w": 8, "x": 12, "y": 0 }
+    },
+    {
+      "type": "table",
+      "title": "Top decks (all time)",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "topk(20, sum(deck_usage_total) by (deck_id))", "refId": "A" }
+      ],
+      "gridPos": { "h": 10, "w": 8, "x": 12, "y": 6 }
+    }
+  ],
+  "schemaVersion": 36
+}
+

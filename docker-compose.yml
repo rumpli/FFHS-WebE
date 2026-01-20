@@ -1,0 +1,171 @@
+services:
+  loki:
+    image: grafana/loki:3.5.7
+    command: -config.file=/etc/loki/local-config.yml
+    ports: ["3100:3100"]
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:3100/ready || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+    volumes:
+      - ./infra/loki-config.yml:/etc/loki/local-config.yml:ro
+      - loki-data:/loki
+
+  promtail:
+    image: grafana/promtail:3.5.7
+    command: -config.file=/etc/promtail/config.yml
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:9080/ready || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./infra/promtail-config.yml:/etc/promtail/config.yml:ro
+    depends_on:
+      otel-collector:
+        condition: service_started
+
+  tempo:
+    image: grafana/tempo:2.9.0
+    command: ["-config.file=/etc/tempo/config.yml"]
+    volumes: [./infra/tempo-config.yml:/etc/tempo/config.yml:ro]
+    ports: ["3200:3200"]   # Tempo HTTP API
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.137.0
+    command:
+    - --config=/etc/otelcol-contrib/config.yaml
+    volumes:
+    - ./infra/otel-collector.yml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+    - "4317:4317"
+    - "4318:4318"
+    - "8880:8880"
+    - "8889:8889"
+    - "13133:13133"
+    depends_on:
+      tempo:
+        condition: service_started
+      loki:
+        condition: service_healthy
+      prometheus:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:v3.7.1
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --enable-feature=native-histograms
+    - --web.enable-remote-write-receiver
+    - --storage.tsdb.path=/prometheus
+    - --storage.tsdb.retention.time=15d
+    volumes:
+    - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    - prom-data:/prometheus
+    ports: ["9090:9090"]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/ready || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+
+  grafana:
+    image: grafana/grafana:12.2.0
+    ports: ["3000:3000"]
+    healthcheck:
+        test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+        interval: 10s
+        timeout: 3s
+        retries: 10
+        start_period: 15s
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./infra/grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./infra/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      otel-collector:
+        condition: service_started
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: towerlords
+      POSTGRES_USER: tower
+      POSTGRES_PASSWORD: towerpw
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tower -d towerlords"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    stop_grace_period: 10s
+    init: true
+    develop:
+      watch:
+        - action: rebuild
+          path: .server/package.json
+        - action: rebuild
+          path: ./server/src
+          target: /app/src
+          ignore:
+            - node_modules/
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    env_file:
+      - ./server/.env
+    ports: ["8080:8080"]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  client:
+    develop:
+        watch:
+            - action: rebuild
+              path: ./client/package.json
+            - action: rebuild
+              path: ./client/src
+              target: /app/src
+            - action: rebuild
+              path: ./client/index.html
+            - action: rebuild
+              path: ./client/styles
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    environment:
+      VITE_HEALTH_URL: http://backend:8080/health
+      VITE_WS_URL: ws://backend:8080/ws
+    ports: ["5173:80"]
+#    depends_on:
+#      backend:
+#        condition: service_started
+
+volumes:
+  db_data:
+  loki-data:
+  prom-data:
